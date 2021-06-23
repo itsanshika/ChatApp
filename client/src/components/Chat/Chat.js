@@ -22,7 +22,16 @@ setName(name);
 
 // console.log(socket);
 
-socket.emit('join',{name,room});
+socket.emit('join',{name,room},()=>
+{
+    //callbackfunction
+});
+
+return ()=>
+{
+    socket.emit('disconnect');
+    socket.off();
+}
 
   }, [ENDPOINT,location]);
 
