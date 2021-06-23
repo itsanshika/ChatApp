@@ -1,46 +1,31 @@
-const users=[];
+const users = [];
 
-function addUser({id,name,room})
-{
-    name=name.trim().toLowerCase();
-    room=room.trim().toLowerCase();
+const addUser = ({ id, name, room }) => {
+  name = name.trim().toLowerCase();
+  room = room.trim().toLowerCase();
 
+  const existingUser = users.find(
+    (user) => user.room === room && user.name === name
+  );
 
-const existingUser=users.find((user)=> user.name===name && user.room===room);
+  if (!name || !room) return { error: "Username and room are required." };
+  if (existingUser) return { error: "Username is taken." };
 
-if(existingUser)
-{
-    return {error:'Already existing User, Please Choose Another Namr or Room'}
-}
+  const user = { id, name, room };
 
-const user={id,name,room};
+  users.push(user);
 
-users.push(user);
+  return { user };
+};
 
-return {user};
-}
+const removeUser = (id) => {
+  const index = users.findIndex((user) => user.id === id);
 
+  if (index !== -1) return users.splice(index, 1)[0];
+};
 
+const getUser = (id) => users.find((user) => user.id === id);
 
-function removeUser(userId)
-{
-    const ind= users.findIndex((user)=> user.id===userId);
-    if(ind!==-1)
-    {
-        return users.filter((user)=>user.id!==userId);
+const getUsersInRoom = (room) => users.filter((user) => user.room === room);
 
-    }
-    
-}
-
-function getUser(id)
-{
-    return users.find((user)=>user.id===id);
-}
-
-function getUserRoom(room)
-{
-    return users.filter((user)=> user.room ===room);
-}
-
-module.exports={addUser, removeUser,getUser,getUserRoom};
+module.exports = { addUser, removeUser, getUser, getUsersInRoom };
