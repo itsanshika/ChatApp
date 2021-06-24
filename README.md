@@ -9,6 +9,8 @@ Application : [ChatApp2k21](https://chatapp2k21.netlify.app/)
     <img src="https://raw.github.com/itsanshika/ChatApp/client/src/img/chat.jpg" width="400px" height="300px"</img> 
 </div>
 
+![](client/src/img/chat.jpg)
+
 
 ## Current Features
 * RealTime Application
