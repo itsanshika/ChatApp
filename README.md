@@ -4,6 +4,10 @@ A Realtime Chat Application with React on the front end, with NodeJS + Socket.io
 
 Application : [ChatApp2k21](https://chatapp2k21.netlify.app/)
 
+## Technologies Used:
+#### Frontend- React
+#### Backend- Node.js & Socket.io
+
 ## Current Features
 * RealTime Application
 * Active people visible
