@@ -2,15 +2,24 @@ import React, { useState, useEffect } from "react";
 import "./Chat.css";
 import queryString from "query-string";
 import io from "socket.io-client";
-import InfoBar from '../InfoBar/InfoBar';
-import Input from '../Input/Input';
+
+
+import InfoBar from "../InfoBar/InfoBar";
+import Input from "../Input/Input";
+import Messages from "../Messages/Messages";
+import TextContainer from '../TextContainer/TextContainer';
+
 let socket;
 const ENDPOINT = "localhost:5000";
+
 function Chat({ location }) {
+
+
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([]);
+  const [users, setUsers] = useState('');
 
   useEffect(() => {
     const { name, room } = queryString.parse(location.search);
@@ -24,29 +33,34 @@ function Chat({ location }) {
 
     // console.log(socket);
 
-    socket.emit("join", { name, room }, () => {
+    socket.emit("join", { name, room }, (error) => {
       //callbackfunction
+      if(error)
+      {
+        alert(error);
+      }
     });
 
-    return () => {
-      socket.emit("disconnected ");
-      socket.off();
-    };
-  }, [ENDPOINT, location]);
+    // return () => {
+    //   socket.emit("disconnected ");
+    //   socket.off();
+    // };
+  }, [ENDPOINT, location.search]);
 
   //adding elemets in messaging array!
   useEffect(() => {
     socket.on("message", (messageInfo) => {
       setMessages((messages) => [...messages, messageInfo]);
     });
-  }, [messages]);
 
-  function sendMessage(event) {
-    setMessage(event.target.value);
-  }
+    socket.on("roomData", ({ users }) => {
+      setUsers(users);
+    });
+
+  }, []);
 
   //for sending messages
-  function sendMessageNow(event) {
+  function sendMessage(event) {
     event.preventDefault();
     if (message) {
       socket.emit("sendMessage", message, () => {
@@ -56,15 +70,20 @@ function Chat({ location }) {
     }
   }
 
-  console.log(message, messages);
+  //console.log(messages);
 
   return (
     <div className="outerContainer">
       <div className="container">
         <InfoBar room={room} />
-        {/* <Messages messages={messages} name={name} /> */}
-        <Input message={message} messageTyped={sendMessage} sendMessage={sendMessageNow} />
+        <Messages messages={messages} name={name} />
+        <Input
+          message={message}
+          setMessage={setMessage}
+          sendMessage={sendMessage}
+        />
       </div>
+      <TextContainer users={users}/>
     </div>
   );
 }

@@ -21,7 +21,7 @@ io.on("connection", (socket) => {
     const { error, userList } = addUser({ id: socket.id, name, room });
 
     if (error) return callback(error);
-    console.log(room);
+    //console.log(room);
 
     socket.join(room);
 
@@ -39,6 +39,9 @@ io.on("connection", (socket) => {
       .to(room)
       .emit("message", { user: "admin", text: `${name} has joined` });
 
+      io.to(room).emit('roomData', { room: room, users: getUsersInRoom(room) });
+
+
     callback();
   });
 
@@ -48,15 +51,23 @@ io.on("connection", (socket) => {
   socket.on("sendMessage", (message, callback) => {
     const user = getUser(socket.id);
 
-    //console.log(user);
+   // console.log(user);
 
     io.to(user.room).emit("message", { user: user.name, text: message });
+
     callback();
   });
 
-  socket.on("disconnect", () => {
-    console.log("Disconnected!!");
-  });
+  socket.on('disconnect', () => {
+    const user = removeUser(socket.id);
+
+    if(user) {
+      io.to(user.room).emit('message', { user: 'Admin', text: `${user.name} has left.` });
+      io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room)});
+    }
+  })
+
+
 });
 
 server.listen(5000, () => {
