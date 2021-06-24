@@ -10,7 +10,7 @@ import Messages from "../Messages/Messages";
 import TextContainer from '../TextContainer/TextContainer';
 
 let socket;
-const ENDPOINT = "localhost:5000";
+const ENDPOINT = "https://chatapp2k21.herokuapp.com/";
 
 function Chat({ location }) {
 
